@@ -1,20 +1,31 @@
 'use client'
 
-import {useMemo,useState} from 'react'
+import {useEffect,useMemo,useState} from 'react'
 import './home.css'
 import {Bell,Camera,Car,ChevronDown,Gamepad2,Heart,Home as HomeIcon,Menu,Package,Search,ShieldCheck,Shirt,Smartphone,Sparkles,Tag,User,X} from 'lucide-react'
+import {createClient} from '../lib/supabase/client'
+import {loadListings,toggleFavorite as toggleDatabaseFavorite} from '../lib/marketplace-data'
 
 const categories=[
  {label:'Véhicules',icon:Car},{label:'Immobilier',icon:HomeIcon},{label:'High-tech',icon:Smartphone},
  {label:'Maison',icon:Package},{label:'Mode',icon:Shirt},{label:'Loisirs',icon:Gamepad2}
 ]
 
-const listings=[
- {id:'l1',title:'Montre automatique',price:'245 €',meta:'Paris 11e · Aujourd’hui',category:'Mode',mode:'Acheter',invoice:true,shipping:'Livraison ou retrait',image:'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=85'},
- {id:'l2',title:'Vélo électrique urbain',price:'1 190 €',meta:'Lyon 3e · Il y a 1 h',category:'Véhicules',mode:'Troquer',invoice:true,shipping:'Retrait sur place',image:'https://images.unsplash.com/photo-1571068316344-75bc76f77890?auto=format&fit=crop&w=900&q=85'},
- {id:'l3',title:'Console nouvelle génération',price:'Enchère · 380 €',meta:'Évry-Courcouronnes · Hier',category:'High-tech',mode:'Enchères',invoice:true,shipping:'Envoi sécurisé',image:'https://images.unsplash.com/photo-1486401899868-0e435ed85128?auto=format&fit=crop&w=900&q=85'},
- {id:'l4',title:'Canapé design 4 places',price:'690 €',meta:'Bordeaux · Il y a 2 h',category:'Maison',mode:'Acheter',invoice:false,shipping:'Retrait sur place',image:'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=900&q=85'}
+const demoListings=[
+ {id:'demo-1',demo:true,title:'Montre automatique',price:'245 €',meta:'Paris 11e · Exemple',category:'Mode',mode:'Acheter',invoice:true,shipping:'Livraison ou retrait',image:'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=85'},
+ {id:'demo-2',demo:true,title:'Vélo électrique urbain',price:'1 190 €',meta:'Lyon 3e · Exemple',category:'Véhicules',mode:'Troquer',invoice:true,shipping:'Retrait sur place',image:'https://images.unsplash.com/photo-1571068316344-75bc76f77890?auto=format&fit=crop&w=900&q=85'},
+ {id:'demo-3',demo:true,title:'Console nouvelle génération',price:'Enchère · 380 €',meta:'Évry-Courcouronnes · Exemple',category:'High-tech',mode:'Enchères',invoice:true,shipping:'Envoi sécurisé',image:'https://images.unsplash.com/photo-1486401899868-0e435ed85128?auto=format&fit=crop&w=900&q=85'},
+ {id:'demo-4',demo:true,title:'Canapé design 4 places',price:'690 €',meta:'Bordeaux · Exemple',category:'Maison',mode:'Acheter',invoice:false,shipping:'Retrait sur place',image:'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=900&q=85'}
 ]
+
+const categoryImages={Mode:demoListings[0].image,Véhicules:demoListings[1].image,'High-tech':demoListings[2].image,Maison:demoListings[3].image}
+const modeLabels={buy:'Acheter',swap:'Troquer',auction:'Enchères'}
+
+function displayListing(item){
+ const photos=[...(item.listing_photos||[])].sort((a,b)=>a.position-b.position)
+ const mode=modeLabels[item.transaction_mode]||'Acheter'
+ return {id:item.id,title:item.title,category:item.category,mode,invoice:item.has_invoice,image:photos[0]?.public_url||categoryImages[item.category]||demoListings[3].image,price:item.transaction_mode==='swap'?'Troc':`${item.transaction_mode==='auction'?'Enchère · ':''}${Number(item.price||0).toLocaleString('fr-FR')} €`,meta:`${item.country||'France'} · ${new Date(item.created_at).toLocaleDateString('fr-FR')}`,shipping:item.shipping?(item.pickup?'Livraison ou retrait':'Envoi disponible'):'Retrait sur place'}
+}
 
 export default function Home(){
  const [mode,setMode]=useState('Acheter')
@@ -22,21 +33,37 @@ export default function Home(){
  const [category,setCategory]=useState('Tout')
  const [favorites,setFavorites]=useState([])
  const [menuOpen,setMenuOpen]=useState(false)
+ const [databaseListings,setDatabaseListings]=useState([])
+ const [user,setUser]=useState(null)
 
- const filtered=useMemo(()=>listings.filter(item=>{
+ useEffect(()=>{
+  let active=true
+  loadListings().then(rows=>{if(active)setDatabaseListings(rows.map(displayListing))}).catch(()=>{})
+  const supabase=createClient()
+  supabase.auth.getUser().then(({data})=>{if(active)setUser(data.user||null)}).catch(()=>{})
+  const {data:listener}=supabase.auth.onAuthStateChange((_event,session)=>{if(active)setUser(session?.user||null)})
+  return()=>{active=false;listener.subscription.unsubscribe()}
+ },[])
+
+ const visibleListings=databaseListings.length?databaseListings:demoListings
+
+ const filtered=useMemo(()=>visibleListings.filter(item=>{
   const queryOk=!query.trim()||item.title.toLowerCase().includes(query.trim().toLowerCase())
   const categoryOk=category==='Tout'||item.category===category
   const modeOk=mode==='Acheter'||item.mode===mode
   return queryOk&&categoryOk&&modeOk
- }),[mode,query,category])
+ }),[mode,query,category,visibleListings])
 
- const toggleFavorite=id=>setFavorites(current=>current.includes(id)?current.filter(x=>x!==id):[...current,id])
+ async function toggleFavorite(item){
+  if(item.demo){setFavorites(current=>current.includes(item.id)?current.filter(x=>x!==item.id):[...current,item.id]);return}
+  try{const saved=await toggleDatabaseFavorite(item.id);setFavorites(current=>saved?[...new Set([...current,item.id])]:current.filter(x=>x!==item.id))}catch{window.location.href='/connexion'}
+ }
 
  return <main className="homePage">
   <header className="homeNav"><div className="homeContainer navInner">
    <a className="homeBrand" href="/"><span><Sparkles size={21}/></span>dealora</a>
    <nav className={menuOpen?'open':''}><a href="#explorer">Explorer</a><a href="#categories">Catégories</a><a href="#securite">Comment ça marche</a></nav>
-   <div className="navActions"><a className="roundAction" href="/notifications" aria-label="Notifications"><Bell size={20}/></a><a className="accountAction" href="/connexion"><User size={18}/><span>Se connecter</span></a><a className="publishAction" href="/vendre"><Camera size={18}/>Déposer une annonce</a><button className="menuAction" onClick={()=>setMenuOpen(!menuOpen)} aria-label="Menu">{menuOpen?<X/>:<Menu/>}</button></div>
+   <div className="navActions"><a className="roundAction" href="/notifications" aria-label="Notifications"><Bell size={20}/></a><a className="accountAction" href={user?'/compte':'/connexion'}><User size={18}/><span>{user?'Mon compte':'Se connecter'}</span></a><a className="publishAction" href="/vendre"><Camera size={18}/>Déposer une annonce</a><button className="menuAction" onClick={()=>setMenuOpen(!menuOpen)} aria-label="Menu">{menuOpen?<X/>:<Menu/>}</button></div>
   </div></header>
 
   <section className="homeHero"><div className="heroHalo"/><div className="homeContainer heroInside">
@@ -55,7 +82,7 @@ export default function Home(){
   </section>
 
   <section className="homeSection listingZone"><div className="homeContainer"><div className="homeSectionHead"><div><span className="orangeKicker">SÉLECTION DU JOUR</span><h2>Les pépites du moment</h2></div><span className="countLabel">{filtered.length} annonce{filtered.length>1?'s':''}</span></div>
-   {filtered.length?<div className="homeListings">{filtered.map(item=><article key={item.id}><div className="listingVisual"><a href={`/annonce/${item.id}`}><img src={item.image} alt={item.title}/></a><span className={`modeBadge ${item.mode.toLowerCase()}`}>{item.mode}</span><button className={`heartAction ${favorites.includes(item.id)?'saved':''}`} onClick={()=>toggleFavorite(item.id)} aria-label="Favori"><Heart size={20} fill={favorites.includes(item.id)?'currentColor':'none'}/></button></div><div className="listingContent"><div className="listingLabels"><span>{item.category}</span><span>{item.invoice?'Facture disponible':'Sans facture'}</span></div><a href={`/annonce/${item.id}`}><h3>{item.title}</h3></a><strong>{item.price}</strong><p>{item.meta}</p><div className="shippingLabel"><Package size={15}/>{item.shipping}</div></div></article>)}</div>:<div className="homeEmpty"><Search size={30}/><h3>Aucune pépite trouvée</h3><p>Essayez une autre recherche ou catégorie.</p><button onClick={()=>{setQuery('');setCategory('Tout');setMode('Acheter')}}>Voir toutes les annonces</button></div>}
+   {filtered.length?<div className="homeListings">{filtered.map(item=><article key={item.id}><div className="listingVisual">{item.demo?<div className="demoVisual"><img src={item.image} alt={item.title}/></div>:<a href={`/annonce/${item.id}`}><img src={item.image} alt={item.title}/></a>}<span className={`modeBadge ${item.mode.toLowerCase()}`}>{item.mode}</span><button className={`heartAction ${favorites.includes(item.id)?'saved':''}`} onClick={()=>toggleFavorite(item)} aria-label="Favori"><Heart size={20} fill={favorites.includes(item.id)?'currentColor':'none'}/></button></div><div className="listingContent"><div className="listingLabels"><span>{item.category}</span><span>{item.invoice?'Facture disponible':'Sans facture'}</span></div>{item.demo?<h3>{item.title}</h3>:<a href={`/annonce/${item.id}`}><h3>{item.title}</h3></a>}<strong>{item.price}</strong><p>{item.meta}</p><div className="shippingLabel"><Package size={15}/>{item.shipping}</div></div></article>)}</div>:<div className="homeEmpty"><Search size={30}/><h3>Aucune pépite trouvée</h3><p>Essayez une autre recherche ou catégorie.</p><button onClick={()=>{setQuery('');setCategory('Tout');setMode('Acheter')}}>Voir toutes les annonces</button></div>}
   </div></section>
 
   <section className="homeSafety homeContainer" id="securite"><div className="safetyTitle"><span className="orangeKicker">VOS ÉCHANGES, EN MIEUX</span><h2>Simple, flexible et sécurisé</h2></div><div className="safetyCards"><div><ShieldCheck/><h3>Paiement protégé</h3><p>Votre argent reste sécurisé jusqu’à la bonne réception.</p></div><div><Tag/><h3>3 façons de conclure</h3><p>Achat direct, troc ou enchères : vous choisissez.</p></div><div><Package/><h3>Livraison ou retrait</h3><p>Les frais d’envoi et d’importation sont affichés avant de payer.</p></div></div></section>
