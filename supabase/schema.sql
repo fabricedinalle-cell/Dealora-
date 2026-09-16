@@ -18,6 +18,12 @@ create table public.listings (
  shipping boolean not null default false, international boolean not null default false, country text not null default 'France',
  status text not null default 'active' check(status in ('draft','active','reserved','sold','ended')), created_at timestamptz not null default now()
 );
+create table public.listing_contacts (
+ listing_id uuid primary key references public.listings(id) on delete cascade,
+ seller_id uuid not null references public.profiles(id) on delete cascade,
+ phone text not null check(char_length(trim(phone)) between 6 and 30),
+ show_phone boolean not null default false, created_at timestamptz not null default now()
+);
 create table public.listing_photos (
  id uuid primary key default gen_random_uuid(), listing_id uuid not null references public.listings(id) on delete cascade,
  storage_path text not null, public_url text not null, position smallint not null default 0, created_at timestamptz not null default now()
@@ -29,9 +35,14 @@ create table public.offers (id uuid primary key default gen_random_uuid(),listin
 create table public.notifications (id uuid primary key default gen_random_uuid(),user_id uuid not null references public.profiles(id) on delete cascade,title text not null default 'Dealora',body text not null,kind text not null default 'info',read_at timestamptz,created_at timestamptz not null default now());
 create table public.reviews (id uuid primary key default gen_random_uuid(),reviewer_id uuid not null references public.profiles(id) on delete cascade,reviewed_user_id uuid not null references public.profiles(id) on delete cascade,transaction_id uuid,rating smallint not null check(rating between 1 and 5),comment text check(comment is null or char_length(comment)<=1500),created_at timestamptz not null default now(),check(reviewer_id<>reviewed_user_id));
 
-alter table public.profiles enable row level security; alter table public.listings enable row level security; alter table public.listing_photos enable row level security; alter table public.favorites enable row level security; alter table public.conversations enable row level security; alter table public.messages enable row level security; alter table public.offers enable row level security; alter table public.notifications enable row level security; alter table public.reviews enable row level security;
+alter table public.profiles enable row level security; alter table public.listings enable row level security; alter table public.listing_contacts enable row level security; alter table public.listing_photos enable row level security; alter table public.favorites enable row level security; alter table public.conversations enable row level security; alter table public.messages enable row level security; alter table public.offers enable row level security; alter table public.notifications enable row level security; alter table public.reviews enable row level security;
 create policy "profiles readable" on public.profiles for select using(true); create policy "profile owner updates" on public.profiles for update using(auth.uid()=id);
 create policy "listings readable" on public.listings for select using(status='active' or auth.uid()=seller_id); create policy "seller creates listing" on public.listings for insert with check(auth.uid()=seller_id); create policy "seller updates listing" on public.listings for update using(auth.uid()=seller_id);
+grant select on public.listing_contacts to anon, authenticated; grant insert, update, delete on public.listing_contacts to authenticated;
+create policy "visible listing phone" on public.listing_contacts for select to anon, authenticated using(show_phone or (select auth.uid())=seller_id);
+create policy "seller creates listing phone" on public.listing_contacts for insert to authenticated with check((select auth.uid())=seller_id and exists(select 1 from public.listings l where l.id=listing_id and l.seller_id=(select auth.uid())));
+create policy "seller updates listing phone" on public.listing_contacts for update to authenticated using((select auth.uid())=seller_id) with check((select auth.uid())=seller_id and exists(select 1 from public.listings l where l.id=listing_id and l.seller_id=(select auth.uid())));
+create policy "seller deletes listing phone" on public.listing_contacts for delete to authenticated using((select auth.uid())=seller_id);
 create policy "photos readable" on public.listing_photos for select using(true); create policy "seller adds photos" on public.listing_photos for insert with check(exists(select 1 from public.listings l where l.id=listing_id and l.seller_id=auth.uid()));
 create policy "favorites owner" on public.favorites for all using(auth.uid()=user_id) with check(auth.uid()=user_id);
 create policy "conversation members" on public.conversations for select using(auth.uid() in(buyer_id,seller_id)); create policy "buyer starts conversation" on public.conversations for insert with check(auth.uid()=buyer_id and auth.uid()<>seller_id);
@@ -45,4 +56,4 @@ create policy "public listing photos" on storage.objects for select using(bucket
 create policy "users upload own listing photos" on storage.objects for insert to authenticated with check(bucket_id='listing-images' and (storage.foldername(name))[1]=auth.uid()::text);
 create policy "users delete own listing photos" on storage.objects for delete to authenticated using(bucket_id='listing-images' and (storage.foldername(name))[1]=auth.uid()::text);
 
-create index listings_created_idx on public.listings(created_at desc); create index listings_mode_idx on public.listings(transaction_mode); create index messages_conversation_idx on public.messages(conversation_id,created_at); create index offers_listing_idx on public.offers(listing_id,created_at); create index notifications_user_idx on public.notifications(user_id,created_at desc);
+create index listings_created_idx on public.listings(created_at desc); create index listings_mode_idx on public.listings(transaction_mode); create index listing_contacts_seller_idx on public.listing_contacts(seller_id); create index messages_conversation_idx on public.messages(conversation_id,created_at); create index offers_listing_idx on public.offers(listing_id,created_at); create index notifications_user_idx on public.notifications(user_id,created_at desc);
