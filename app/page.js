@@ -1,19 +1,65 @@
-const categories = ['Véhicules','Immobilier','Mode','High-tech','Maison','Loisirs','Collection','Services']
-const listings = [
-  {title:'Montre automatique',price:'245 €',tag:'Achat',emoji:'⌚'},
-  {title:'Vélo électrique urbain',price:'1 190 €',tag:'Troc possible',emoji:'🚲'},
-  {title:'Console nouvelle génération',price:'Enchère · 380 €',tag:'Enchère',emoji:'🎮'},
-  {title:'Canapé design',price:'690 €',tag:'Achat',emoji:'🛋️'}
+'use client'
+
+import {useMemo,useState} from 'react'
+import './home.css'
+import {Bell,Camera,Car,ChevronDown,Gamepad2,Heart,Home as HomeIcon,Menu,Package,Search,ShieldCheck,Shirt,Smartphone,Sparkles,Tag,User,X} from 'lucide-react'
+
+const categories=[
+ {label:'Véhicules',icon:Car},{label:'Immobilier',icon:HomeIcon},{label:'High-tech',icon:Smartphone},
+ {label:'Maison',icon:Package},{label:'Mode',icon:Shirt},{label:'Loisirs',icon:Gamepad2}
+]
+
+const listings=[
+ {id:'l1',title:'Montre automatique',price:'245 €',meta:'Paris 11e · Aujourd’hui',category:'Mode',mode:'Acheter',invoice:true,shipping:'Livraison ou retrait',image:'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=85'},
+ {id:'l2',title:'Vélo électrique urbain',price:'1 190 €',meta:'Lyon 3e · Il y a 1 h',category:'Véhicules',mode:'Troquer',invoice:true,shipping:'Retrait sur place',image:'https://images.unsplash.com/photo-1571068316344-75bc76f77890?auto=format&fit=crop&w=900&q=85'},
+ {id:'l3',title:'Console nouvelle génération',price:'Enchère · 380 €',meta:'Évry-Courcouronnes · Hier',category:'High-tech',mode:'Enchères',invoice:true,shipping:'Envoi sécurisé',image:'https://images.unsplash.com/photo-1486401899868-0e435ed85128?auto=format&fit=crop&w=900&q=85'},
+ {id:'l4',title:'Canapé design 4 places',price:'690 €',meta:'Bordeaux · Il y a 2 h',category:'Maison',mode:'Acheter',invoice:false,shipping:'Retrait sur place',image:'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=900&q=85'}
 ]
 
 export default function Home(){
- return <main>
-  <header className="nav"><a className="logo" href="/">Dealora<span>.</span></a><div className="search">⌕ <input placeholder="Que recherchez-vous ?"/></div><nav><a href="#explorer">Explorer</a><a href="#how">Comment ça marche</a><a className="ghost navButton" href="/connexion">Se connecter</a><a className="navButton" href="/vendre">+ Déposer une annonce</a></nav></header>
-  <section className="hero"><div className="heroGlow"></div><p className="eyebrow">LA MARKETPLACE QUI VOUS DONNE LE CHOIX</p><h1>Tout peut trouver<br/><em>une nouvelle histoire.</em></h1><p className="lead">Achetez, vendez, troquez ou enchérissez. En main propre ou livré partout dans le monde.</p><div className="actions"><a className="navButton" href="#explorer">Découvrir les annonces →</a><a className="ghost navButton" href="/vendre">Vendre un objet</a></div><div className="trust"><span>✓ Paiements sécurisés</span><span>✓ Profils vérifiés</span><span>✓ Protection acheteur</span><span>✓ International</span></div></section>
-  <section className="section" id="explorer"><div className="sectionHead"><div><p className="eyebrow">EXPLOREZ</p><h2>Tout ce que vous cherchez.</h2></div><a href="#all">Voir toutes les catégories →</a></div><div className="categories">{categories.map((x,i)=><button className="cat" key={x}><b>{['🚗','🏠','👟','💻','🪑','🎸','💎','🛠️'][i]}</b><span>{x}</span></button>)}</div>
-  <div className="sectionHead"><h2>À découvrir maintenant</h2><div className="tabs"><button>Pour vous</button><button className="ghost">Près de vous</button><button className="ghost">Enchères</button></div></div><div className="grid">{listings.map(x=><article className="card" key={x.title}><div className="photo">{x.emoji}<span>♡</span></div><div className="cardbody"><small>{x.tag}</small><h3>{x.title}</h3><strong>{x.price}</strong><p>📍 France · Expédition disponible</p><div className="meta"><span>🧾 Facture : Oui</span><span>🛡️ Achat protégé</span></div></div></article>)}</div></section>
-  <section className="how" id="how"><p className="eyebrow">UN OBJET, PLUSIEURS POSSIBILITÉS</p><h2>Vous décidez comment faire affaire.</h2><div className="modes"><article><b>01</b><h3>Acheter</h3><p>Payez en toute sécurité et choisissez livraison ou remise en main propre.</p></article><article><b>02</b><h3>Vendre</h3><p>Publiez rapidement, précisez l'état, la facture et vos options de remise.</p></article><article><b>03</b><h3>Troquer</h3><p>Proposez un échange et négociez directement avec l'autre membre.</p></article><article><b>04</b><h3>Enchérir</h3><p>Suivez les enchères en temps réel et recevez vos alertes personnalisées.</p></article></div></section>
-  <section className="world"><div><p className="eyebrow">SANS FRONTIÈRES</p><h2>Du quartier au monde entier.</h2><p>Dealora prévoit les options de livraison, les frais d'envoi et l'estimation des frais d'importation pour rendre les transactions internationales plus claires.</p></div><div className="orb">DEALORA<br/><small>GLOBAL</small></div></section>
-  <footer><a className="logo" href="/">Dealora<span>.</span></a><p>Achetez. Vendez. Troquez. Enchérissez.</p><small>© 2026 Dealora. Tous droits réservés.</small></footer>
+ const [mode,setMode]=useState('Acheter')
+ const [query,setQuery]=useState('')
+ const [category,setCategory]=useState('Tout')
+ const [favorites,setFavorites]=useState([])
+ const [menuOpen,setMenuOpen]=useState(false)
+
+ const filtered=useMemo(()=>listings.filter(item=>{
+  const queryOk=!query.trim()||item.title.toLowerCase().includes(query.trim().toLowerCase())
+  const categoryOk=category==='Tout'||item.category===category
+  const modeOk=mode==='Acheter'||item.mode===mode
+  return queryOk&&categoryOk&&modeOk
+ }),[mode,query,category])
+
+ const toggleFavorite=id=>setFavorites(current=>current.includes(id)?current.filter(x=>x!==id):[...current,id])
+
+ return <main className="homePage">
+  <header className="homeNav"><div className="homeContainer navInner">
+   <a className="homeBrand" href="/"><span><Sparkles size={21}/></span>dealora</a>
+   <nav className={menuOpen?'open':''}><a href="#explorer">Explorer</a><a href="#categories">Catégories</a><a href="#securite">Comment ça marche</a></nav>
+   <div className="navActions"><a className="roundAction" href="/notifications" aria-label="Notifications"><Bell size={20}/></a><a className="accountAction" href="/connexion"><User size={18}/><span>Se connecter</span></a><a className="publishAction" href="/vendre"><Camera size={18}/>Déposer une annonce</a><button className="menuAction" onClick={()=>setMenuOpen(!menuOpen)} aria-label="Menu">{menuOpen?<X/>:<Menu/>}</button></div>
+  </div></header>
+
+  <section className="homeHero"><div className="heroHalo"/><div className="homeContainer heroInside">
+   <div className="homeEyebrow"><span/>La nouvelle façon de faire de bonnes affaires</div>
+   <h1>Achetez. Vendez.<br/><em>Échangez autrement.</em></h1>
+   <p>Des millions d’objets à découvrir, à acheter, troquer ou remporter aux enchères. En toute confiance, partout dans le monde.</p>
+   <div className="marketSearch" id="explorer">
+    <div className="modeTabs">{['Acheter','Troquer','Enchères'].map(item=><button key={item} className={mode===item?'active':''} onClick={()=>setMode(item)}>{item}</button>)}</div>
+    <div className="searchLine"><Search size={22}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Que recherchez-vous ?"/><button className="locationAction">Partout en France <ChevronDown size={17}/></button><button className="findAction">Rechercher</button></div>
+    <div className="trustNote"><ShieldCheck size={17}/>Paiement protégé · Vendeurs évalués · Assistance 7j/7</div>
+   </div>
+  </div></section>
+
+  <section className="homeSection homeContainer" id="categories"><div className="homeSectionHead"><div><span className="orangeKicker">TOUT COMMENCE ICI</span><h2>Explorez les catégories</h2></div><button className="seeAll" onClick={()=>setCategory('Tout')}>Tout voir →</button></div>
+   <div className="categoryTiles">{categories.map(({label,icon:Icon})=><button key={label} className={category===label?'selected':''} onClick={()=>setCategory(category===label?'Tout':label)}><span><Icon size={27}/></span><b>{label}</b><small>Découvrir</small></button>)}</div>
+  </section>
+
+  <section className="homeSection listingZone"><div className="homeContainer"><div className="homeSectionHead"><div><span className="orangeKicker">SÉLECTION DU JOUR</span><h2>Les pépites du moment</h2></div><span className="countLabel">{filtered.length} annonce{filtered.length>1?'s':''}</span></div>
+   {filtered.length?<div className="homeListings">{filtered.map(item=><article key={item.id}><div className="listingVisual"><a href={`/annonce/${item.id}`}><img src={item.image} alt={item.title}/></a><span className={`modeBadge ${item.mode.toLowerCase()}`}>{item.mode}</span><button className={`heartAction ${favorites.includes(item.id)?'saved':''}`} onClick={()=>toggleFavorite(item.id)} aria-label="Favori"><Heart size={20} fill={favorites.includes(item.id)?'currentColor':'none'}/></button></div><div className="listingContent"><div className="listingLabels"><span>{item.category}</span><span>{item.invoice?'Facture disponible':'Sans facture'}</span></div><a href={`/annonce/${item.id}`}><h3>{item.title}</h3></a><strong>{item.price}</strong><p>{item.meta}</p><div className="shippingLabel"><Package size={15}/>{item.shipping}</div></div></article>)}</div>:<div className="homeEmpty"><Search size={30}/><h3>Aucune pépite trouvée</h3><p>Essayez une autre recherche ou catégorie.</p><button onClick={()=>{setQuery('');setCategory('Tout');setMode('Acheter')}}>Voir toutes les annonces</button></div>}
+  </div></section>
+
+  <section className="homeSafety homeContainer" id="securite"><div className="safetyTitle"><span className="orangeKicker">VOS ÉCHANGES, EN MIEUX</span><h2>Simple, flexible et sécurisé</h2></div><div className="safetyCards"><div><ShieldCheck/><h3>Paiement protégé</h3><p>Votre argent reste sécurisé jusqu’à la bonne réception.</p></div><div><Tag/><h3>3 façons de conclure</h3><p>Achat direct, troc ou enchères : vous choisissez.</p></div><div><Package/><h3>Livraison ou retrait</h3><p>Les frais d’envoi et d’importation sont affichés avant de payer.</p></div></div></section>
+
+  <footer className="homeFooter"><div className="homeContainer"><a className="homeBrand footerBrand" href="/"><span><Sparkles size={20}/></span>dealora</a><p>Achetez. Vendez. Troquez. Enchérissez.</p><small>© 2026 Dealora. Tous droits réservés.</small></div></footer>
  </main>
 }
