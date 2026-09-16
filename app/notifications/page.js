@@ -1,0 +1,6 @@
+'use client'
+import Link from 'next/link'
+import {useEffect,useState} from 'react'
+import {createClient} from '../../lib/supabase/client'
+import {watchNotifications} from '../../lib/realtime'
+export default function Notifications(){const [items,setItems]=useState([]),[loading,setLoading]=useState(true);useEffect(()=>{let stop=()=>{};const supabase=createClient();supabase.auth.getUser().then(async({data})=>{if(!data.user){window.location.href='/connexion';return}const {data:rows}=await supabase.from('notifications').select('*').eq('user_id',data.user.id).order('created_at',{ascending:false}).limit(50);setItems(rows||[]);setLoading(false);stop=watchNotifications(data.user.id,n=>setItems(x=>[n,...x]))});return()=>stop()},[]);return <main><header className="simpleNav"><Link className="logo" href="/">Dealora<span>.</span></Link><Link href="/compte">Mon compte</Link></header><section className="account"><p className="eyebrow">POUR VOUS</p><h1>Notifications</h1>{loading?<p>Chargement…</p>:<div className="panel messageList">{items.length?items.map(n=><article key={n.id} className={!n.read_at?'unread':''}><div className="miniPhoto">🔔</div><div><strong>{n.title||'Dealora'}</strong><p>{n.body}</p></div><span>{!n.read_at?'Nouveau':'Vu'}</span></article>):<p>Aucune notification pour le moment.</p>}</div>}</section></main>}
