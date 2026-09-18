@@ -107,12 +107,12 @@ export default function Home() {
     <main className="min-h-screen bg-white text-neutral-950">
       {/* HEADER */}
       <header className="sticky top-0 z-50 border-b border-neutral-200 bg-white/95 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 md:px-8">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:px-8 md:py-4">
           <a href="/" className="flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#16c784] text-xl font-black text-black">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#16c784] text-lg font-black text-black md:h-10 md:w-10 md:text-xl">
               D
             </div>
-            <span className="text-2xl font-black tracking-tight">
+            <span className="text-[1.65rem] font-black tracking-[-0.04em] md:text-2xl">
               dealora
             </span>
           </a>
@@ -143,7 +143,7 @@ export default function Home() {
 
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="rounded-xl border border-neutral-200 p-2 md:hidden"
+            className="flex h-11 w-11 items-center justify-center rounded-full bg-black text-white shadow-sm md:hidden"
             aria-label="Menu"
           >
             {menuOpen ? <X /> : <Menu />}
@@ -170,26 +170,26 @@ export default function Home() {
       </header>
 
       {/* HERO */}
-      <section className="overflow-hidden bg-[#dffcef]">
-        <div className="mx-auto grid max-w-7xl items-center gap-8 px-4 py-10 sm:py-14 md:grid-cols-2 md:gap-10 md:px-8 md:py-20">
+      <section className="overflow-hidden bg-gradient-to-b from-[#effcf6] via-[#e2faef] to-[#dff8ec]">
+        <div className="mx-auto grid max-w-7xl items-center gap-5 px-4 pb-8 pt-5 sm:py-14 md:grid-cols-2 md:gap-10 md:px-8 md:py-20">
           <div>
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-bold shadow-sm">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#16c784]/20 bg-white/90 px-3.5 py-2 text-xs font-bold shadow-sm md:mb-5 md:px-4 md:text-sm">
               <span className="h-2 w-2 rounded-full bg-[#16c784]" />
               Acheter autrement
             </div>
 
-            <h1 className="max-w-xl text-[3.25rem] font-black leading-[0.94] tracking-[-0.045em] sm:text-6xl md:text-7xl">
+            <h1 className="max-w-xl text-[2.65rem] font-black leading-[0.96] tracking-[-0.05em] sm:text-6xl md:text-7xl">
               Tout peut avoir
               <span className="block text-[#079669]">une seconde vie.</span>
             </h1>
 
-            <p className="mt-6 max-w-xl text-lg leading-8 text-neutral-700">
+            <p className="mt-4 max-w-xl text-[15px] leading-6 text-neutral-600 sm:mt-6 sm:text-lg sm:leading-8">
               Achetez, vendez, troquez ou enchérissez sur des milliers
               d&apos;objets et de biens. Simplement, partout.
             </p>
 
             {/* MODES */}
-            <div className="mt-7 grid w-full max-w-[410px] grid-cols-3 rounded-full bg-white p-1.5 shadow-sm sm:mt-8 sm:w-fit">
+            <div className="mt-5 grid w-full max-w-[410px] grid-cols-3 rounded-2xl bg-white/90 p-1 shadow-sm ring-1 ring-black/5 sm:mt-8 sm:w-fit sm:rounded-full sm:p-1.5">
               {['Acheter', 'Troquer', 'Enchérir'].map((item) => (
                 <button
                   key={item}
@@ -206,7 +206,7 @@ export default function Home() {
             </div>
 
             {/* SEARCH */}
-            <div className="mt-5 flex max-w-2xl items-center rounded-[22px] bg-white p-2 shadow-xl shadow-black/5">
+            <div className="mt-3 flex max-w-2xl items-center rounded-[20px] bg-white p-1.5 shadow-[0_12px_35px_rgba(0,0,0,0.08)] ring-1 ring-black/5 sm:mt-5 sm:p-2">
               <Search className="ml-3 shrink-0 text-neutral-500" size={22} />
 
               <input
@@ -228,7 +228,7 @@ export default function Home() {
               <button
                 onClick={openPhotoSearch}
                 aria-label="Rechercher avec une photo"
-                className="mr-1 flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#ef542b] text-white shadow-sm transition active:scale-95 hover:bg-[#db4823]"
+                className="mr-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-[15px] bg-black text-white shadow-sm transition active:scale-95 hover:bg-neutral-800 sm:h-12 sm:w-12 sm:rounded-2xl"
               >
                 <Camera size={24} strokeWidth={2.4} />
               </button>
@@ -238,42 +238,42 @@ export default function Home() {
               </button>
             </div>
 
-            <div className="mt-4 flex items-center gap-2 text-sm text-neutral-600">
+            <div className="mt-3 flex items-center gap-2 text-sm font-medium text-neutral-600 sm:mt-4">
               <MapPin size={16} />
               <span>France · Europe · International</span>
             </div>
           </div>
 
           {/* ILLUSTRATION */}
-          <div className="relative mx-auto min-h-[360px] w-full max-w-[520px] sm:min-h-[420px]">
-            <div className="absolute left-1/2 top-1/2 h-[300px] w-[300px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#16c784] sm:h-[370px] sm:w-[370px] md:h-[450px] md:w-[450px]" />
+          <div className="relative mx-auto min-h-[285px] w-full max-w-[440px] sm:min-h-[420px] sm:max-w-[520px]">
+            <div className="absolute left-1/2 top-1/2 h-[240px] w-[240px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#16c784] sm:h-[370px] sm:w-[370px] md:h-[450px] md:w-[450px]" />
 
-            <div className="absolute left-[4%] top-[10%] rotate-[-7deg] rounded-3xl bg-white p-4 shadow-2xl sm:p-5">
-              <div className="text-5xl">👟</div>
+            <div className="absolute left-[7%] top-[9%] rotate-[-5deg] rounded-[22px] bg-white p-3 sm:p-5 shadow-2xl sm:p-5">
+              <div className="text-4xl sm:text-5xl">👟</div>
               <p className="mt-3 font-black">Sneakers</p>
               <p className="text-sm text-neutral-500">Troc possible</p>
             </div>
 
-            <div className="absolute right-[3%] top-[8%] rotate-[6deg] rounded-3xl bg-black p-4 text-white shadow-2xl sm:p-5">
-              <Gavel size={42} />
+            <div className="absolute right-[5%] top-[7%] rotate-[5deg] rounded-[22px] bg-black p-3 text-white shadow-2xl sm:p-5">
+              <Gavel size={32} className="sm:h-[42px] sm:w-[42px]" />
               <p className="mt-3 font-black">Enchères</p>
               <p className="text-sm text-neutral-300">À vous de jouer</p>
             </div>
 
-            <div className="absolute left-1/2 top-[38%] z-10 flex h-40 w-40 -translate-x-1/2 items-center justify-center rounded-[38px] bg-white shadow-2xl sm:h-48 sm:w-48 md:h-56 md:w-56">
-              <ShoppingBag size={95} strokeWidth={1.5} />
+            <div className="absolute left-1/2 top-[36%] z-10 flex h-32 w-32 -translate-x-1/2 items-center justify-center rounded-[30px] bg-white shadow-2xl ring-1 ring-black/5 sm:h-48 sm:w-48 md:h-56 md:w-56">
+              <ShoppingBag size={68} strokeWidth={1.5} className="sm:h-[95px] sm:w-[95px]" />
             </div>
 
-            <div className="absolute bottom-[4%] left-[3%] rotate-[5deg] rounded-3xl bg-black p-4 text-white shadow-2xl sm:p-5">
-              <Repeat2 size={38} className="text-[#16c784]" />
+            <div className="absolute bottom-[3%] left-[5%] rotate-[4deg] rounded-[22px] bg-black p-3 text-white shadow-2xl sm:p-5">
+              <Repeat2 size={30} className="text-[#16c784] sm:h-[38px] sm:w-[38px]" />
               <p className="mt-3 font-black">Troquez</p>
               <p className="text-sm text-neutral-300">
                 Échangez simplement
               </p>
             </div>
 
-            <div className="absolute bottom-[3%] right-[3%] rotate-[-5deg] rounded-3xl bg-white p-4 shadow-2xl sm:p-5">
-              <div className="text-5xl">📱</div>
+            <div className="absolute bottom-[2%] right-[5%] rotate-[-4deg] rounded-[22px] bg-white p-3 shadow-2xl sm:p-5">
+              <div className="text-4xl sm:text-5xl">📱</div>
               <p className="mt-3 font-black">High-tech</p>
               <p className="text-sm text-neutral-500">Bonnes affaires</p>
             </div>
@@ -283,16 +283,16 @@ export default function Home() {
 
       {/* INTERNATIONAL DISCOVERY */}
       <section className="border-b border-neutral-200 bg-white">
-        <div className="mx-auto grid max-w-7xl gap-4 px-4 py-6 md:grid-cols-3 md:px-8">
-          <div className="flex items-center gap-4 rounded-3xl bg-[#073b2a] p-5 text-white">
+        <div className="mx-auto grid max-w-7xl gap-3 px-4 py-5 md:grid-cols-3 md:gap-4 md:px-8 md:py-6">
+          <div className="flex items-center gap-4 rounded-[22px] bg-[#073b2a] p-4 md:rounded-3xl md:p-5 text-white">
             <Globe2 className="text-[#54e6a8]" size={30} />
             <div><p className="font-black">Des annonces sans frontières</p><p className="text-sm text-white/65">Découvrez des objets en France et à l’international.</p></div>
           </div>
-          <div className="flex items-center gap-4 rounded-3xl bg-[#f4fbf7] p-5">
+          <div className="flex items-center gap-4 rounded-[22px] bg-[#f4fbf7] p-4 md:rounded-3xl md:p-5">
             <Truck className="text-[#079669]" size={30} />
             <div><p className="font-black">Livraison ou retrait</p><p className="text-sm text-neutral-600">Choisissez selon les options proposées par le vendeur.</p></div>
           </div>
-          <div className="flex items-center gap-4 rounded-3xl border border-neutral-200 p-5">
+          <div className="flex items-center gap-4 rounded-[22px] border border-neutral-200 p-4 md:rounded-3xl md:p-5">
             <PackageCheck className="text-[#079669]" size={30} />
             <div><p className="font-black">Importation transparente</p><p className="text-sm text-neutral-600">Les frais éventuels sont indiqués avant le paiement.</p></div>
           </div>
