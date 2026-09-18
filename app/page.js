@@ -171,14 +171,14 @@ export default function Home() {
 
       {/* HERO */}
       <section className="overflow-hidden bg-[#dffcef]">
-        <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-14 md:grid-cols-2 md:px-8 md:py-20">
+        <div className="mx-auto grid max-w-7xl items-center gap-8 px-4 py-10 sm:py-14 md:grid-cols-2 md:gap-10 md:px-8 md:py-20">
           <div>
             <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-bold shadow-sm">
               <span className="h-2 w-2 rounded-full bg-[#16c784]" />
               Acheter autrement
             </div>
 
-            <h1 className="max-w-xl text-5xl font-black leading-[0.98] tracking-tight md:text-7xl">
+            <h1 className="max-w-xl text-[3.25rem] font-black leading-[0.94] tracking-[-0.045em] sm:text-6xl md:text-7xl">
               Tout peut avoir
               <span className="block text-[#079669]">une seconde vie.</span>
             </h1>
@@ -189,12 +189,12 @@ export default function Home() {
             </p>
 
             {/* MODES */}
-            <div className="mt-8 flex w-fit rounded-full bg-white p-1.5 shadow-sm">
+            <div className="mt-7 grid w-full max-w-[410px] grid-cols-3 rounded-full bg-white p-1.5 shadow-sm sm:mt-8 sm:w-fit">
               {['Acheter', 'Troquer', 'Enchérir'].map((item) => (
                 <button
                   key={item}
                   onClick={() => setMode(item)}
-                  className={`rounded-full px-5 py-2.5 text-sm font-bold transition ${
+                  className={`rounded-full px-3 py-3 text-sm font-bold transition sm:px-5 sm:py-2.5 ${
                     mode === item
                       ? 'bg-black text-white'
                       : 'text-neutral-600 hover:bg-neutral-100'
@@ -206,7 +206,7 @@ export default function Home() {
             </div>
 
             {/* SEARCH */}
-            <div className="mt-5 flex max-w-2xl items-center rounded-2xl bg-white p-2 shadow-xl shadow-black/5">
+            <div className="mt-5 flex max-w-2xl items-center rounded-[22px] bg-white p-2 shadow-xl shadow-black/5">
               <Search className="ml-3 shrink-0 text-neutral-500" size={22} />
 
               <input
@@ -228,9 +228,9 @@ export default function Home() {
               <button
                 onClick={openPhotoSearch}
                 aria-label="Rechercher avec une photo"
-                className="mr-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#dffcef] text-black transition hover:bg-[#bdf6dc]"
+                className="mr-1 flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#ef542b] text-white shadow-sm transition active:scale-95 hover:bg-[#db4823]"
               >
-                <Camera size={22} />
+                <Camera size={24} strokeWidth={2.4} />
               </button>
 
               <button className="hidden rounded-xl bg-black px-6 py-3 font-bold text-white sm:block">
@@ -245,26 +245,26 @@ export default function Home() {
           </div>
 
           {/* ILLUSTRATION */}
-          <div className="relative min-h-[420px]">
-            <div className="absolute left-1/2 top-1/2 h-[370px] w-[370px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#16c784] md:h-[450px] md:w-[450px]" />
+          <div className="relative mx-auto min-h-[360px] w-full max-w-[520px] sm:min-h-[420px]">
+            <div className="absolute left-1/2 top-1/2 h-[300px] w-[300px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#16c784] sm:h-[370px] sm:w-[370px] md:h-[450px] md:w-[450px]" />
 
-            <div className="absolute left-[5%] top-[12%] rotate-[-8deg] rounded-3xl bg-white p-5 shadow-2xl">
+            <div className="absolute left-[4%] top-[10%] rotate-[-7deg] rounded-3xl bg-white p-4 shadow-2xl sm:p-5">
               <div className="text-5xl">👟</div>
               <p className="mt-3 font-black">Sneakers</p>
               <p className="text-sm text-neutral-500">Troc possible</p>
             </div>
 
-            <div className="absolute right-[2%] top-[8%] rotate-[7deg] rounded-3xl bg-black p-5 text-white shadow-2xl">
+            <div className="absolute right-[3%] top-[8%] rotate-[6deg] rounded-3xl bg-black p-4 text-white shadow-2xl sm:p-5">
               <Gavel size={42} />
               <p className="mt-3 font-black">Enchères</p>
               <p className="text-sm text-neutral-300">À vous de jouer</p>
             </div>
 
-            <div className="absolute left-[22%] top-[36%] z-10 flex h-48 w-48 items-center justify-center rounded-[45px] bg-white shadow-2xl md:h-56 md:w-56">
+            <div className="absolute left-1/2 top-[38%] z-10 flex h-40 w-40 -translate-x-1/2 items-center justify-center rounded-[38px] bg-white shadow-2xl sm:h-48 sm:w-48 md:h-56 md:w-56">
               <ShoppingBag size={95} strokeWidth={1.5} />
             </div>
 
-            <div className="absolute bottom-[7%] left-[2%] rotate-[6deg] rounded-3xl bg-black p-5 text-white shadow-2xl">
+            <div className="absolute bottom-[4%] left-[3%] rotate-[5deg] rounded-3xl bg-black p-4 text-white shadow-2xl sm:p-5">
               <Repeat2 size={38} className="text-[#16c784]" />
               <p className="mt-3 font-black">Troquez</p>
               <p className="text-sm text-neutral-300">
@@ -272,7 +272,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="absolute bottom-[5%] right-[4%] rotate-[-6deg] rounded-3xl bg-white p-5 shadow-2xl">
+            <div className="absolute bottom-[3%] right-[3%] rotate-[-5deg] rounded-3xl bg-white p-4 shadow-2xl sm:p-5">
               <div className="text-5xl">📱</div>
               <p className="mt-3 font-black">High-tech</p>
               <p className="text-sm text-neutral-500">Bonnes affaires</p>
