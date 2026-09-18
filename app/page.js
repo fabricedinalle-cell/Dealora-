@@ -1,5 +1,6 @@
 'use client'
-import {useRef,useState} from 'react'
+import {useEffect,useRef,useState} from 'react'
+import {supabase} from '../lib/supabase'
 import {Search,MapPin,ShoppingCart,RefreshCw,Gavel,Leaf,Users,ShieldCheck,Heart,Home as HomeIcon,MessageCircle,User,Plus,Camera,ChevronRight,Clock,Star,Share2,X,SlidersHorizontal,ArrowLeft,Send} from 'lucide-react'
 const categories=[['Maison & Déco','Des milliers d’annonces','https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=500&q=85'],['High-Tech','Smartphones, PC, etc.','https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=500&q=85'],['Mode & Accessoires','Vêtements, sneakers...','https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=500&q=85'],['Véhicules','Voitures, motos...','https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=500&q=85']]
 const seed=[['Canapé 3 places','250 €','Paris (75)','Il y a 2h','https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=600&q=85'],['iPhone 13 – 128 Go','320 €','Lyon (69)','Il y a 4h','https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=600&q=85'],['Yamaha MT-07','5 800 €','Marseille (13)','Il y a 6h','https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=600&q=85'],['Table à manger','120 €','Bordeaux (33)','Il y a 8h','https://images.unsplash.com/photo-1530018607912-eff2daa1bac4?auto=format&fit=crop&w=600&q=85']]
@@ -9,6 +10,14 @@ export default function Home(){
  const openAd=a=>{setSelected(a);setView('product');window.scrollTo(0,0)}
  const toggleFav=(name,e)=>{e?.stopPropagation();setFavs(v=>v.includes(name)?v.filter(x=>x!==name):[...v,name])}
  const nav=(v)=>{setView(v);setSelected(null);window.scrollTo(0,0)}
+ useEffect(()=>{let alive=true
+  supabase.from('listings').select('id,title,price,created_at,listing_photos(public_url)').eq('status','active').order('created_at',{ascending:false}).limit(30).then(({data})=>{
+   if(!alive||!data?.length)return
+   const live=data.map(x=>[x.title,x.price==null?'À négocier':new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(x.price),'France','Récent',x.listing_photos?.[0]?.public_url||'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=85'])
+   setAds(live)
+  })
+  return()=>{alive=false}
+ },[])
  const filtered=ads.filter(a=>a[0].toLowerCase().includes(query.toLowerCase())||a[2].toLowerCase().includes(query.toLowerCase()))
  const Card=({a})=><article onClick={()=>openAd(a)}><div className="pic"><img src={a[4]} alt={a[0]}/><button onClick={e=>toggleFav(a[0],e)} className={favs.includes(a[0])?'liked':''}><Heart/></button></div><div className="adText"><b>{a[0]}</b><strong>{a[1]}</strong><div><span><MapPin/>{a[2]}</span><small>{a[3]}</small></div></div></article>
  if(view==='product'&&selected) return <main className="dealora productPage"><header className="productHead"><button onClick={()=>nav('home')}>‹</button><b>dealora</b><div><button onClick={()=>toast('Lien prêt à partager')}><Share2/></button><button onClick={e=>toggleFav(selected[0],e)} className={favs.includes(selected[0])?'liked':''}><Heart/></button></div></header><div className="productPhoto"><img src={selected[4]} alt={selected[0]}/><span>1 / 4</span></div><section className="productInfo"><div className="productPrice"><div><h1>{selected[0]}</h1><strong>{selected[1]}</strong></div><button onClick={e=>toggleFav(selected[0],e)}><Heart/></button></div><p className="meta"><MapPin/>{selected[2]} <span>•</span><Clock/>{selected[3]}</p><div className="dealModes"><span><ShoppingCart/> Achat direct</span><span><RefreshCw/> Troc possible</span><span><Gavel/> Offre acceptée</span></div><h2>Description</h2><p className="description">Article en très bon état, soigneusement entretenu. Disponible immédiatement. Contactez le vendeur pour plus d’informations ou pour faire une proposition.</p><div className="seller"><div className="avatar">M</div><div><b>Marie D.</b><span><Star/> 4,9 · 28 avis</span><small>Membre vérifié</small></div><ChevronRight/></div></section><div className="productActions"><button className="message" onClick={()=>nav('messages')}><MessageCircle/>Message</button><button className="buy" onClick={()=>toast('Achat sécurisé bientôt disponible')}><ShoppingCart/>Acheter</button></div>{notice&&<div className="toast">{notice}</div>}</main>
