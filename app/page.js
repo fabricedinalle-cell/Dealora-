@@ -12,12 +12,19 @@ import {
   Gavel,
   Repeat2,
   ShoppingBag,
-  Plus
+  Plus,
+  Leaf,
+  Smartphone,
+  PackageCheck,
+  Bell,
+  Menu,
+  X,
 } from 'lucide-react'
 
 export default function Home() {
   const [mode, setMode] = useState('Acheter')
   const [query, setQuery] = useState('')
+  const [menuOpen, setMenuOpen] = useState(false)
   const photoInput = useRef(null)
 
   const categories = [
@@ -26,7 +33,7 @@ export default function Home() {
     { name: 'Mode', emoji: '👟' },
     { name: 'High-tech', emoji: '📱' },
     { name: 'Maison', emoji: '🛋️' },
-    { name: 'Loisirs', emoji: '🎮' }
+    { name: 'Loisirs', emoji: '🎮' },
   ]
 
   const listings = [
@@ -36,666 +43,505 @@ export default function Home() {
       price: '899 €',
       location: 'Paris',
       image:
-        'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=900&q=80'
+        'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=900&q=80',
+      badge: 'À vendre',
     },
     {
       id: 2,
       title: 'Sneakers premium',
-      price: '120 €',
+      price: '180 €',
       location: 'Lyon',
       image:
-        'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=80'
+        'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=80',
+      badge: 'Troc possible',
     },
     {
       id: 3,
-      title: 'Console gaming',
-      price: '390 €',
+      title: 'Montre automatique',
+      price: '320 €',
       location: 'Bordeaux',
       image:
-        'https://images.unsplash.com/photo-1606813907291-d86efa9b94db?auto=format&fit=crop&w=900&q=80'
+        'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=80',
+      badge: 'Enchère',
     },
     {
       id: 4,
-      title: 'Montre automatique',
-      price: '280 €',
-      location: 'Marseille',
+      title: 'Appareil photo',
+      price: '590 €',
+      location: 'Nice',
       image:
-        'https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=900&q=80'
-    }
+        'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&w=900&q=80',
+      badge: 'À vendre',
+    },
   ]
 
-  function openPhotoSearch() {
+  const openPhotoSearch = () => {
     photoInput.current?.click()
   }
 
-  function handlePhoto(event) {
+  const handlePhoto = (event) => {
     const file = event.target.files?.[0]
 
     if (file) {
-      alert(
-        'Photo sélectionnée. La recherche visuelle Dealora pourra maintenant analyser cette image.'
-      )
+      console.log('Photo sélectionnée :', file)
+      // La recherche visuelle sera branchée ici.
     }
   }
 
   return (
-    <>
-      <style>{`
-        * {
-          box-sizing: border-box;
-        }
-
-        body {
-          margin: 0;
-          background: #f7f8f7;
-          color: #111;
-          font-family: Arial, Helvetica, sans-serif;
-        }
-
-        button,
-        input {
-          font: inherit;
-        }
-
-        button {
-          cursor: pointer;
-        }
-
-        .dealora {
-          min-height: 100vh;
-          background:
-            radial-gradient(circle at 85% 3%, rgba(20,184,102,.12), transparent 24%),
-            #f7f8f7;
-        }
-
-        .header {
-          background: rgba(255,255,255,.96);
-          border-bottom: 1px solid #e9ecea;
-          position: sticky;
-          top: 0;
-          z-index: 20;
-        }
-
-        .headerInner {
-          max-width: 1200px;
-          margin: auto;
-          height: 74px;
-          padding: 0 22px;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 18px;
-        }
-
-        .logo {
-          font-size: 30px;
-          font-weight: 900;
-          letter-spacing: -1.8px;
-        }
-
-        .logo span {
-          color: #14b866;
-        }
-
-        .nav {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-        }
-
-        .login {
-          display: flex;
-          align-items: center;
-          gap: 7px;
-          background: transparent;
-          border: 0;
-          font-weight: 700;
-          color: #151515;
-          padding: 10px;
-        }
-
-        .sell {
-          border: 0;
-          border-radius: 13px;
-          padding: 12px 17px;
-          background: #111;
-          color: white;
-          font-weight: 800;
-          display: flex;
-          align-items: center;
-          gap: 7px;
-        }
-
-        .hero {
-          max-width: 1200px;
-          margin: auto;
-          padding: 62px 22px 28px;
-          text-align: center;
-        }
-
-        .badge {
-          display: inline-flex;
-          align-items: center;
-          gap: 7px;
-          padding: 8px 13px;
-          border-radius: 999px;
-          background: #e8f9f0;
-          color: #087943;
-          font-size: 13px;
-          font-weight: 800;
-        }
-
-        h1 {
-          max-width: 850px;
-          margin: 18px auto 12px;
-          font-size: clamp(38px, 7vw, 68px);
-          line-height: .98;
-          letter-spacing: -3px;
-        }
-
-        .green {
-          color: #14b866;
-        }
-
-        .subtitle {
-          max-width: 690px;
-          margin: 0 auto;
-          color: #626762;
-          font-size: 17px;
-          line-height: 1.55;
-        }
-
-        .modeTabs {
-          display: inline-flex;
-          background: #ecefed;
-          padding: 5px;
-          border-radius: 14px;
-          margin-top: 28px;
-        }
-
-        .modeTab {
-          border: 0;
-          background: transparent;
-          padding: 10px 18px;
-          border-radius: 10px;
-          font-weight: 800;
-          color: #606560;
-        }
-
-        .modeTab.active {
-          background: #111;
-          color: white;
-          box-shadow: 0 4px 12px rgba(0,0,0,.12);
-        }
-
-        .searchBox {
-          max-width: 800px;
-          margin: 17px auto 0;
-          background: white;
-          border: 1px solid #e0e4e1;
-          box-shadow: 0 14px 40px rgba(0,0,0,.08);
-          padding: 7px;
-          border-radius: 20px;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-        }
-
-        .searchIcon {
-          margin-left: 10px;
-          color: #777;
-          flex: 0 0 auto;
-        }
-
-        .searchBox input[type="text"] {
-          flex: 1;
-          min-width: 0;
-          border: 0;
-          outline: none;
-          padding: 14px 4px;
-          font-size: 16px;
-          background: transparent;
-        }
-
-        .cameraBtn {
-          width: 48px;
-          height: 48px;
-          border-radius: 14px;
-          border: 1px solid #dfe4e0;
-          background: #f5f7f5;
-          display: grid;
-          place-items: center;
-          flex: 0 0 auto;
-        }
-
-        .cameraBtn:hover {
-          background: #e8f9f0;
-          color: #0b9d57;
-        }
-
-        .searchBtn {
-          border: 0;
-          background: #14b866;
-          color: white;
-          border-radius: 14px;
-          height: 48px;
-          padding: 0 20px;
-          font-weight: 900;
-        }
-
-        .photoHelp {
-          margin-top: 12px;
-          font-size: 13px;
-          color: #777;
-        }
-
-        .categories {
-          max-width: 1100px;
-          margin: 25px auto 0;
-          padding: 0 22px;
-          display: grid;
-          grid-template-columns: repeat(6, 1fr);
-          gap: 12px;
-        }
-
-        .category {
-          background: white;
-          border: 1px solid #e6e9e7;
-          border-radius: 18px;
-          padding: 18px 8px;
-          text-align: center;
-          font-weight: 800;
-        }
-
-        .categoryEmoji {
-          display: block;
-          font-size: 28px;
-          margin-bottom: 8px;
-        }
-
-        .section {
-          max-width: 1200px;
-          margin: 45px auto 0;
-          padding: 0 22px 60px;
-        }
-
-        .sectionHead {
-          display: flex;
-          justify-content: space-between;
-          align-items: end;
-          margin-bottom: 18px;
-        }
-
-        .sectionHead h2 {
-          margin: 0;
-          font-size: 28px;
-          letter-spacing: -1px;
-        }
-
-        .seeAll {
-          border: 0;
-          background: transparent;
-          color: #0b9956;
-          font-weight: 800;
-          display: flex;
-          align-items: center;
-        }
-
-        .cards {
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 16px;
-        }
-
-        .card {
-          background: white;
-          border: 1px solid #e6e9e7;
-          border-radius: 20px;
-          overflow: hidden;
-        }
-
-        .imageWrap {
-          position: relative;
-          aspect-ratio: 1 / .82;
-          background: #eee;
-        }
-
-        .imageWrap img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-
-        .heart {
-          position: absolute;
-          right: 11px;
-          top: 11px;
-          width: 39px;
-          height: 39px;
-          display: grid;
-          place-items: center;
-          border: 0;
-          border-radius: 50%;
-          background: rgba(255,255,255,.93);
-        }
-
-        .cardBody {
-          padding: 14px;
-        }
-
-        .cardTitle {
-          font-weight: 800;
-          margin-bottom: 6px;
-        }
-
-        .price {
-          font-size: 21px;
-          font-weight: 900;
-        }
-
-        .location {
-          color: #747874;
-          font-size: 13px;
-          margin-top: 8px;
-          display: flex;
-          align-items: center;
-          gap: 4px;
-        }
-
-        .features {
-          max-width: 1156px;
-          margin: 0 auto 60px;
-          background: #101211;
-          color: white;
-          border-radius: 28px;
-          padding: 32px;
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 20px;
-        }
-
-        .feature {
-          padding: 10px;
-        }
-
-        .featureIcon {
-          width: 48px;
-          height: 48px;
-          border-radius: 14px;
-          display: grid;
-          place-items: center;
-          background: #14b866;
-          margin-bottom: 15px;
-        }
-
-        .feature h3 {
-          margin: 0 0 8px;
-        }
-
-        .feature p {
-          margin: 0;
-          color: #b8bdb9;
-          line-height: 1.5;
-          font-size: 14px;
-        }
-
-        @media (max-width: 800px) {
-          .headerInner {
-            height: 64px;
-            padding: 0 15px;
-          }
-
-          .logo {
-            font-size: 26px;
-          }
-
-          .login span {
-            display: none;
-          }
-
-          .sell {
-            padding: 10px 12px;
-          }
-
-          .sell span {
-            display: none;
-          }
-
-          .hero {
-            padding: 42px 15px 20px;
-          }
-
-          h1 {
-            font-size: 43px;
-            letter-spacing: -2px;
-          }
-
-          .subtitle {
-            font-size: 15px;
-          }
-
-          .modeTabs {
-            width: 100%;
-          }
-
-          .modeTab {
-            flex: 1;
-            padding: 10px 5px;
-          }
-
-          .searchBox {
-            border-radius: 17px;
-          }
-
-          .searchBtn {
-            display: none;
-          }
-
-          .categories {
-            padding: 0 15px;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 9px;
-          }
-
-          .category {
-            font-size: 12px;
-            padding: 14px 5px;
-          }
-
-          .section {
-            padding: 0 15px 40px;
-          }
-
-          .cards {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-          }
-
-          .cardBody {
-            padding: 11px;
-          }
-
-          .cardTitle {
-            font-size: 14px;
-          }
-
-          .price {
-            font-size: 18px;
-          }
-
-          .features {
-            margin: 0 15px 40px;
-            padding: 23px;
-            grid-template-columns: 1fr;
-          }
-        }
-      `}</style>
-
-      <main className="dealora">
-        <header className="header">
-          <div className="headerInner">
-            <div className="logo">
-              Deal<span>ora</span>
+    <main className="min-h-screen bg-white text-neutral-950">
+      {/* HEADER */}
+      <header className="sticky top-0 z-50 border-b border-neutral-200 bg-white/95 backdrop-blur">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 md:px-8">
+          <a href="/" className="flex items-center gap-2">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#16c784] text-xl font-black text-black">
+              D
             </div>
+            <span className="text-2xl font-black tracking-tight">
+              dealora
+            </span>
+          </a>
 
-            <div className="nav">
-              <button className="login">
-                <User size={20} />
-                <span>Se connecter</span>
+          <nav className="hidden items-center gap-7 text-sm font-semibold md:flex">
+            <a href="#annonces" className="hover:text-[#079669]">
+              Acheter
+            </a>
+            <a href="#annonces" className="hover:text-[#079669]">
+              Troquer
+            </a>
+            <a href="#annonces" className="hover:text-[#079669]">
+              Enchères
+            </a>
+          </nav>
+
+          <div className="hidden items-center gap-3 md:flex">
+            <button className="flex items-center gap-2 rounded-full px-4 py-2 font-semibold hover:bg-neutral-100">
+              <User size={19} />
+              Se connecter
+            </button>
+
+            <button className="flex items-center gap-2 rounded-full bg-black px-5 py-3 font-bold text-white transition hover:bg-neutral-800">
+              <Plus size={18} />
+              Déposer une annonce
+            </button>
+          </div>
+
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="rounded-xl border border-neutral-200 p-2 md:hidden"
+            aria-label="Menu"
+          >
+            {menuOpen ? <X /> : <Menu />}
+          </button>
+        </div>
+
+        {menuOpen && (
+          <div className="border-t border-neutral-200 bg-white px-4 py-5 md:hidden">
+            <div className="flex flex-col gap-4 font-semibold">
+              <a href="#annonces">Acheter</a>
+              <a href="#annonces">Troquer</a>
+              <a href="#annonces">Enchères</a>
+              <button className="flex items-center gap-2">
+                <User size={18} />
+                Se connecter
               </button>
-
-              <button className="sell">
-                <Plus size={19} />
-                <span>Déposer une annonce</span>
+              <button className="flex items-center justify-center gap-2 rounded-full bg-black px-5 py-3 text-white">
+                <Plus size={18} />
+                Déposer une annonce
               </button>
             </div>
           </div>
-        </header>
+        )}
+      </header>
 
-        <section className="hero">
-          <div className="badge">
-            <ShieldCheck size={16} />
-            La marketplace nouvelle génération
-          </div>
+      {/* HERO */}
+      <section className="overflow-hidden bg-[#dffcef]">
+        <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-14 md:grid-cols-2 md:px-8 md:py-20">
+          <div>
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-bold shadow-sm">
+              <span className="h-2 w-2 rounded-full bg-[#16c784]" />
+              Acheter autrement
+            </div>
 
-          <h1>
-            Tout peut trouver
-            <br />
-            une <span className="green">nouvelle vie.</span>
-          </h1>
+            <h1 className="max-w-xl text-5xl font-black leading-[0.98] tracking-tight md:text-7xl">
+              Tout peut avoir
+              <span className="block text-[#079669]">une seconde vie.</span>
+            </h1>
 
-          <p className="subtitle">
-            Achetez, vendez, troquez ou enchérissez simplement.
-            Trouvez ce que vous cherchez, près de chez vous ou partout dans le monde.
-          </p>
+            <p className="mt-6 max-w-xl text-lg leading-8 text-neutral-700">
+              Achetez, vendez, troquez ou enchérissez sur des milliers
+              d&apos;objets et de biens. Simplement, partout.
+            </p>
 
-          <div className="modeTabs">
-            {['Acheter', 'Troquer', 'Enchérir'].map(item => (
+            {/* MODES */}
+            <div className="mt-8 flex w-fit rounded-full bg-white p-1.5 shadow-sm">
+              {['Acheter', 'Troquer', 'Enchérir'].map((item) => (
+                <button
+                  key={item}
+                  onClick={() => setMode(item)}
+                  className={`rounded-full px-5 py-2.5 text-sm font-bold transition ${
+                    mode === item
+                      ? 'bg-black text-white'
+                      : 'text-neutral-600 hover:bg-neutral-100'
+                  }`}
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+
+            {/* SEARCH */}
+            <div className="mt-5 flex max-w-2xl items-center rounded-2xl bg-white p-2 shadow-xl shadow-black/5">
+              <Search className="ml-3 shrink-0 text-neutral-500" size={22} />
+
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Que recherchez-vous ?"
+                className="min-w-0 flex-1 bg-transparent px-3 py-3 text-base outline-none"
+              />
+
+              <input
+                ref={photoInput}
+                type="file"
+                accept="image/*"
+                capture="environment"
+                onChange={handlePhoto}
+                className="hidden"
+              />
+
               <button
-                key={item}
-                className={`modeTab ${mode === item ? 'active' : ''}`}
-                onClick={() => setMode(item)}
+                onClick={openPhotoSearch}
+                aria-label="Rechercher avec une photo"
+                className="mr-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#dffcef] text-black transition hover:bg-[#bdf6dc]"
               >
-                {item}
+                <Camera size={22} />
               </button>
-            ))}
-          </div>
 
-          <div className="searchBox">
-            <Search className="searchIcon" size={22} />
-
-            <input
-              type="text"
-              placeholder="Que recherchez-vous ?"
-              value={query}
-              onChange={e => setQuery(e.target.value)}
-            />
-
-            <button
-              className="cameraBtn"
-              onClick={openPhotoSearch}
-              aria-label="Rechercher avec une photo"
-            >
-              <Camera size={23} />
-            </button>
-
-            <button className="searchBtn">
-              Rechercher
-            </button>
-
-            <input
-              ref={photoInput}
-              type="file"
-              accept="image/*"
-              capture="environment"
-              onChange={handlePhoto}
-              style={{ display: 'none' }}
-            />
-          </div>
-
-          <div className="photoHelp">
-            📷 Appuyez sur l’appareil photo pour prendre ou importer une photo.
-          </div>
-        </section>
-
-        <section className="categories">
-          {categories.map(category => (
-            <div className="category" key={category.name}>
-              <span className="categoryEmoji">{category.emoji}</span>
-              {category.name}
+              <button className="hidden rounded-xl bg-black px-6 py-3 font-bold text-white sm:block">
+                Rechercher
+              </button>
             </div>
+
+            <div className="mt-4 flex items-center gap-2 text-sm text-neutral-600">
+              <MapPin size={16} />
+              <span>Partout en France et bientôt dans le monde</span>
+            </div>
+          </div>
+
+          {/* ILLUSTRATION */}
+          <div className="relative min-h-[420px]">
+            <div className="absolute left-1/2 top-1/2 h-[370px] w-[370px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#16c784] md:h-[450px] md:w-[450px]" />
+
+            <div className="absolute left-[5%] top-[12%] rotate-[-8deg] rounded-3xl bg-white p-5 shadow-2xl">
+              <div className="text-5xl">👟</div>
+              <p className="mt-3 font-black">Sneakers</p>
+              <p className="text-sm text-neutral-500">Troc possible</p>
+            </div>
+
+            <div className="absolute right-[2%] top-[8%] rotate-[7deg] rounded-3xl bg-black p-5 text-white shadow-2xl">
+              <Gavel size={42} />
+              <p className="mt-3 font-black">Enchères</p>
+              <p className="text-sm text-neutral-300">À vous de jouer</p>
+            </div>
+
+            <div className="absolute left-[22%] top-[36%] z-10 flex h-48 w-48 items-center justify-center rounded-[45px] bg-white shadow-2xl md:h-56 md:w-56">
+              <ShoppingBag size={95} strokeWidth={1.5} />
+            </div>
+
+            <div className="absolute bottom-[7%] left-[2%] rotate-[6deg] rounded-3xl bg-black p-5 text-white shadow-2xl">
+              <Repeat2 size={38} className="text-[#16c784]" />
+              <p className="mt-3 font-black">Troquez</p>
+              <p className="text-sm text-neutral-300">
+                Échangez simplement
+              </p>
+            </div>
+
+            <div className="absolute bottom-[5%] right-[4%] rotate-[-6deg] rounded-3xl bg-white p-5 shadow-2xl">
+              <div className="text-5xl">📱</div>
+              <p className="mt-3 font-black">High-tech</p>
+              <p className="text-sm text-neutral-500">Bonnes affaires</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CATEGORIES */}
+      <section className="mx-auto max-w-7xl px-4 py-16 md:px-8">
+        <div className="flex items-end justify-between">
+          <div>
+            <p className="font-bold uppercase tracking-[0.2em] text-[#079669]">
+              Explorer
+            </p>
+            <h2 className="mt-2 text-3xl font-black md:text-4xl">
+              Trouvez votre bonheur
+            </h2>
+          </div>
+
+          <button className="hidden items-center gap-1 font-bold md:flex">
+            Toutes les catégories
+            <ChevronRight size={18} />
+          </button>
+        </div>
+
+        <div className="mt-9 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
+          {categories.map((category) => (
+            <button
+              key={category.name}
+              className="group rounded-3xl border border-neutral-200 bg-white p-6 text-left transition hover:-translate-y-1 hover:border-[#16c784] hover:shadow-lg"
+            >
+              <span className="text-4xl">{category.emoji}</span>
+              <p className="mt-5 font-black">{category.name}</p>
+              <ChevronRight
+                size={18}
+                className="mt-2 text-neutral-400 transition group-hover:translate-x-1 group-hover:text-[#079669]"
+              />
+            </button>
           ))}
-        </section>
+        </div>
+      </section>
 
-        <section className="section">
-          <div className="sectionHead">
-            <h2>À découvrir</h2>
+      {/* LISTINGS */}
+      <section id="annonces" className="bg-[#f6f7f6]">
+        <div className="mx-auto max-w-7xl px-4 py-16 md:px-8">
+          <div className="flex items-end justify-between">
+            <div>
+              <p className="font-bold uppercase tracking-[0.2em] text-[#079669]">
+                Sélection
+              </p>
+              <h2 className="mt-2 text-3xl font-black md:text-4xl">
+                Nos coups de cœur
+              </h2>
+            </div>
 
-            <button className="seeAll">
-              Voir tout <ChevronRight size={18} />
+            <button className="hidden items-center gap-1 font-bold md:flex">
+              Voir toutes les annonces
+              <ChevronRight size={18} />
             </button>
           </div>
 
-          <div className="cards">
-            {listings.map(item => (
-              <article className="card" key={item.id}>
-                <div className="imageWrap">
-                  <img src={item.image} alt={item.title} />
+          <div className="mt-9 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {listings.map((listing) => (
+              <article
+                key={listing.id}
+                className="group overflow-hidden rounded-3xl bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+              >
+                <div className="relative aspect-[4/3] overflow-hidden bg-neutral-200">
+                  <img
+                    src={listing.image}
+                    alt={listing.title}
+                    className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                  />
 
-                  <button className="heart">
+                  <span className="absolute left-3 top-3 rounded-full bg-white px-3 py-1.5 text-xs font-black shadow">
+                    {listing.badge}
+                  </span>
+
+                  <button
+                    aria-label="Ajouter aux favoris"
+                    className="absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-full bg-white shadow"
+                  >
                     <Heart size={20} />
                   </button>
                 </div>
 
-                <div className="cardBody">
-                  <div className="cardTitle">{item.title}</div>
-                  <div className="price">{item.price}</div>
+                <div className="p-5">
+                  <p className="text-xl font-black">{listing.price}</p>
+                  <h3 className="mt-1 font-bold">{listing.title}</h3>
 
-                  <div className="location">
-                    <MapPin size={14} />
-                    {item.location}
+                  <div className="mt-4 flex items-center gap-1.5 text-sm text-neutral-500">
+                    <MapPin size={15} />
+                    {listing.location}
                   </div>
                 </div>
               </article>
             ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section className="features">
-          <div className="feature">
-            <div className="featureIcon">
-              <ShoppingBag size={24} />
-            </div>
-            <h3>Achetez simplement</h3>
-            <p>
-              Découvrez des annonces partout et trouvez rapidement
-              les objets qui vous correspondent.
+      {/* TRUST */}
+      <section className="mx-auto max-w-7xl px-4 py-16 md:px-8">
+        <div className="grid overflow-hidden rounded-[36px] bg-black text-white md:grid-cols-3">
+          <div className="p-8 md:p-10">
+            <ShieldCheck size={38} className="text-[#16c784]" />
+            <h3 className="mt-5 text-xl font-black">Transactions sécurisées</h3>
+            <p className="mt-3 leading-7 text-neutral-400">
+              Des outils pensés pour acheter et vendre avec plus de sérénité.
             </p>
           </div>
 
-          <div className="feature">
-            <div className="featureIcon">
-              <Repeat2 size={24} />
-            </div>
-            <h3>Troquez vos objets</h3>
-            <p>
-              Proposez un échange et donnez une nouvelle vie aux objets
-              que vous n’utilisez plus.
+          <div className="border-y border-neutral-800 p-8 md:border-x md:border-y-0 md:p-10">
+            <PackageCheck size={38} className="text-[#16c784]" />
+            <h3 className="mt-5 text-xl font-black">Livraison ou remise en main propre</h3>
+            <p className="mt-3 leading-7 text-neutral-400">
+              Le vendeur peut accepter la récupération sur place ou proposer
+              un envoi.
             </p>
           </div>
 
-          <div className="feature">
-            <div className="featureIcon">
-              <Gavel size={24} />
-            </div>
-            <h3>Enchérissez</h3>
-            <p>
-              Participez aux enchères et tentez d’obtenir les meilleures
-              opportunités sur Dealora.
+          <div className="p-8 md:p-10">
+            <Bell size={38} className="text-[#16c784]" />
+            <h3 className="mt-5 text-xl font-black">Alertes personnalisées</h3>
+            <p className="mt-3 leading-7 text-neutral-400">
+              Recevez une notification lorsqu&apos;une annonce correspond à
+              votre recherche.
             </p>
           </div>
-        </section>
-      </main>
-    </>
+        </div>
+      </section>
+
+      {/* APP */}
+      <section className="mx-auto max-w-7xl px-4 pb-16 md:px-8">
+        <div className="grid items-center gap-10 overflow-hidden rounded-[40px] bg-[#16c784] px-7 py-10 md:grid-cols-2 md:px-14 md:py-14">
+          <div>
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black text-white">
+              <Smartphone size={28} />
+            </div>
+
+            <h2 className="mt-6 max-w-lg text-4xl font-black leading-tight md:text-5xl">
+              Dealora toujours avec vous.
+            </h2>
+
+            <p className="mt-5 max-w-lg text-lg leading-8 text-black/70">
+              Découvrez les bonnes affaires, échangez avec les vendeurs et
+              suivez vos annonces où que vous soyez.
+            </p>
+
+            <div className="mt-7 flex flex-wrap gap-3">
+              <button className="rounded-2xl bg-black px-6 py-3.5 font-bold text-white">
+                Télécharger l&apos;application
+              </button>
+
+              <button className="rounded-2xl border-2 border-black px-6 py-3.5 font-bold">
+                En savoir plus
+              </button>
+            </div>
+          </div>
+
+          <div className="flex justify-center">
+            <div className="w-[260px] rotate-[5deg] rounded-[42px] border-[10px] border-black bg-white p-4 shadow-2xl">
+              <div className="mx-auto mb-5 h-5 w-20 rounded-full bg-black" />
+
+              <div className="rounded-3xl bg-[#dffcef] p-5">
+                <p className="text-sm font-bold text-neutral-500">Bonjour 👋</p>
+                <p className="mt-1 text-2xl font-black">Dealora</p>
+
+                <div className="mt-5 rounded-2xl bg-white p-4 shadow-sm">
+                  <div className="flex items-center gap-3">
+                    <Search size={18} />
+                    <span className="text-sm text-neutral-500">
+                      Rechercher...
+                    </span>
+                    <Camera size={18} className="ml-auto" />
+                  </div>
+                </div>
+
+                <div className="mt-5 grid grid-cols-2 gap-3">
+                  <div className="rounded-2xl bg-white p-4 text-center text-3xl">
+                    👟
+                  </div>
+                  <div className="rounded-2xl bg-white p-4 text-center text-3xl">
+                    📱
+                  </div>
+                  <div className="rounded-2xl bg-white p-4 text-center text-3xl">
+                    🚗
+                  </div>
+                  <div className="rounded-2xl bg-white p-4 text-center text-3xl">
+                    🏠
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ECO */}
+      <section className="border-y border-neutral-200">
+        <div className="mx-auto grid max-w-7xl items-center gap-8 px-4 py-14 md:grid-cols-[auto_1fr_auto] md:px-8">
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#dffcef]">
+            <Leaf size={32} className="text-[#079669]" />
+          </div>
+
+          <div>
+            <h2 className="text-2xl font-black">
+              Acheter d&apos;occasion, c&apos;est aussi agir.
+            </h2>
+            <p className="mt-2 max-w-2xl leading-7 text-neutral-600">
+              Donnez une seconde vie aux objets, favorisez le réemploi et
+              échangez ce que vous n&apos;utilisez plus.
+            </p>
+          </div>
+
+          <button className="flex items-center gap-2 font-black">
+            Découvrir notre démarche
+            <ChevronRight size={19} />
+          </button>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="bg-[#090909] text-white">
+        <div className="mx-auto max-w-7xl px-4 py-14 md:px-8">
+          <div className="grid gap-10 md:grid-cols-4">
+            <div>
+              <div className="flex items-center gap-2">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#16c784] font-black text-black">
+                  D
+                </div>
+                <span className="text-2xl font-black">dealora</span>
+              </div>
+
+              <p className="mt-5 max-w-xs leading-7 text-neutral-400">
+                Achetez. Vendez. Troquez. Enchérissez.
+                <br />
+                Tout mérite une seconde chance.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="font-black">Dealora</h3>
+              <div className="mt-4 space-y-3 text-neutral-400">
+                <p>À propos</p>
+                <p>Comment ça marche</p>
+                <p>Sécurité</p>
+                <p>Application</p>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="font-black">Acheter & vendre</h3>
+              <div className="mt-4 space-y-3 text-neutral-400">
+                <p>Déposer une annonce</p>
+                <p>Vendre</p>
+                <p>Troquer</p>
+                <p>Enchères</p>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="font-black">Aide</h3>
+              <div className="mt-4 space-y-3 text-neutral-400">
+                <p>Centre d&apos;aide</p>
+                <p>Livraison</p>
+                <p>Frais et importation</p>
+                <p>Nous contacter</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-12 flex flex-col gap-4 border-t border-neutral-800 pt-7 text-sm text-neutral-500 md:flex-row md:items-center md:justify-between">
+            <p>© 2026 Dealora. Tous droits réservés.</p>
+
+            <div className="flex gap-5">
+              <span>Confidentialité</span>
+              <span>Conditions</span>
+              <span>Cookies</span>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </main>
   )
 }
