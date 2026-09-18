@@ -1,4 +1,5 @@
 import './globals.css'
+import './home.css'
 
 export const metadata = {
   title: 'Dealora — Achetez, vendez, troquez, enchérissez',
