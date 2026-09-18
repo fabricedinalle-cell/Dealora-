@@ -1,6 +1,6 @@
 'use client'
 import {useRef,useState} from 'react'
-import {Search,Menu,MapPin,ShoppingCart,RefreshCw,Gavel,Leaf,Users,ShieldCheck,Heart,Home,MessageCircle,User,Plus,Camera} from 'lucide-react'
+import {Search,Menu,MapPin,ShoppingCart,RefreshCw,Gavel,Leaf,Users,ShieldCheck,Heart,Home as HomeIcon,MessageCircle,User,Plus,Camera} from 'lucide-react'
 
 const categories=[
  ['Maison & Déco','Des milliers d’annonces','https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=500&q=85'],
@@ -32,6 +32,6 @@ export default function Home(){
    <div className="sectionTitle recent"><h2>Annonces récentes</h2><button>Voir toutes →</button></div>
    <div className="ads">{ads.map(([n,p,l,t,img])=><article key={n}><div className="pic"><img src={img} alt={n}/><button><Heart/></button></div><div className="adText"><b>{n}</b><strong>{p}</strong><div><span><MapPin/>{l}</span><small>{t}</small></div></div></article>)}</div>
   </section>
-  <nav className="bottom">{[[Home,'Accueil'],[Search,'Rechercher'],[Plus,'Déposer'],[MessageCircle,'Messages'],[User,'Mon compte']].map(([I,n],i)=><button key={n} className={i===0?'on':i===2?'deposit':''}><span><I/></span>{n}</button>)}</nav>
+  <nav className="bottom">{[[HomeIcon,'Accueil'],[Search,'Rechercher'],[Plus,'Déposer'],[MessageCircle,'Messages'],[User,'Mon compte']].map(([I,n],i)=><button key={n} className={i===0?'on':i===2?'deposit':''}><span><I/></span>{n}</button>)}</nav>
  </main>
 }
