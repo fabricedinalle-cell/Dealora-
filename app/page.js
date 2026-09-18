@@ -5,11 +5,12 @@ import {Search,MapPin,ShoppingCart,RefreshCw,Gavel,Leaf,Users,ShieldCheck,Heart,
 const categories=[['Maison & Déco','Des milliers d’annonces','https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=500&q=85'],['High-Tech','Smartphones, PC, etc.','https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=500&q=85'],['Mode & Accessoires','Vêtements, sneakers...','https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=500&q=85'],['Véhicules','Voitures, motos...','https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=500&q=85']]
 const seed=[['Canapé 3 places','250 €','Paris (75)','Il y a 2h','https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=600&q=85'],['iPhone 13 – 128 Go','320 €','Lyon (69)','Il y a 4h','https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=600&q=85'],['Yamaha MT-07','5 800 €','Marseille (13)','Il y a 6h','https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=600&q=85'],['Table à manger','120 €','Bordeaux (33)','Il y a 8h','https://images.unsplash.com/photo-1530018607912-eff2daa1bac4?auto=format&fit=crop&w=600&q=85']]
 export default function Home(){
- const [tab,setTab]=useState('Acheter'),[view,setView]=useState('home'),[selected,setSelected]=useState(null),[ads,setAds]=useState(seed),[query,setQuery]=useState(''),[favs,setFavs]=useState([]),[notice,setNotice]=useState(''); const file=useRef(null)
+ const [tab,setTab]=useState('Acheter'),[view,setView]=useState('home'),[selected,setSelected]=useState(null),[ads,setAds]=useState(seed),[query,setQuery]=useState(''),[favs,setFavs]=useState([]),[notice,setNotice]=useState(''),[user,setUser]=useState(null); const file=useRef(null)
  const toast=t=>{setNotice(t);setTimeout(()=>setNotice(''),1800)}
  const openAd=a=>{setSelected(a);setView('product');window.scrollTo(0,0)}
  const toggleFav=(name,e)=>{e?.stopPropagation();setFavs(v=>v.includes(name)?v.filter(x=>x!==name):[...v,name])}
  const nav=(v)=>{setView(v);setSelected(null);window.scrollTo(0,0)}
+ useEffect(()=>{supabase.auth.getUser().then(({data})=>setUser(data.user||null))},[])
  useEffect(()=>{let alive=true
   supabase.from('listings').select('id,title,price,created_at,listing_photos(public_url)').eq('status','active').order('created_at',{ascending:false}).limit(30).then(({data})=>{
    if(!alive||!data?.length)return
