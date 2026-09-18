@@ -22,13 +22,13 @@ export default function Home(){
    <div className="flex gap-2"><button className="grid h-11 w-11 place-items-center rounded-full bg-[#f5f7f6]"><User size={22}/></button><button className="grid h-11 w-11 place-items-center rounded-full bg-[#f5f7f6]"><Menu size={23}/></button></div>
   </header>
   <section className="mx-auto max-w-7xl px-4 md:px-8">
-   <div className="relative overflow-hidden rounded-[28px] bg-gradient-to-br from-white via-[#f5fff9] to-[#e5f8ec] px-1 pb-5 md:grid md:grid-cols-2 md:items-center md:px-8">
-    <div className="relative z-10 pt-2 md:py-12">
+   <div className="relative overflow-hidden rounded-[28px] bg-gradient-to-br from-[#effff7] via-[#eafff3] to-[#dff8e9] px-1 pb-3 md:grid md:grid-cols-2 md:items-center md:px-8">
+    <div className="relative z-10 hidden md:block md:py-12">
      <div className="mb-3 flex items-center gap-2 text-[11px] font-bold uppercase"><span className="h-2 w-2 rounded-full bg-[#10a85b]"/>La nouvelle façon de faire de bonnes affaires</div>
      <h1 className="text-[42px] font-black leading-[.96] tracking-[-.05em] sm:text-5xl">Achetez. Vendez.<br/><span className="text-[#078a49]">Échangez autrement.</span></h1>
      <p className="mt-4 max-w-md text-[15px] leading-6 text-neutral-600">Des millions d’objets à découvrir, à acheter, troquer ou remporter aux enchères.<br/>En toute confiance, partout dans le monde.</p>
     </div>
-    <div className="relative mt-5 h-[285px] md:h-[360px]">
+    <div className="relative mt-2 h-[300px] md:mt-5 md:h-[360px]">
       <div className="absolute right-0 top-0 h-full w-[92%] rounded-[32px] bg-[#e8f7ed]"/>
       <img className="absolute bottom-2 right-[2%] h-[74%] w-[47%] rotate-[-6deg] rounded-[28px] object-cover shadow-xl" src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=700&q=85" alt="Sneakers"/>
       <img className="absolute right-[35%] top-[5%] h-[60%] w-[34%] rotate-[7deg] rounded-[28px] object-cover shadow-xl" src="https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=600&q=85" alt="Smartphone"/>
@@ -36,7 +36,7 @@ export default function Home(){
       <div className="absolute bottom-3 left-[36%] rounded-2xl bg-white/90 px-3 py-2 text-sm font-black italic shadow">Tout se trouve sur<br/><span className="text-[#078a49]">Dealora ♡</span></div>
     </div>
    </div>
-   <div className="relative z-20 mt-2 rounded-[24px] border border-neutral-200 bg-white p-3 shadow-[0_12px_40px_rgba(0,0,0,.08)] md:-mt-10 md:p-5">
+   <div className="relative z-20 -mt-1 rounded-[24px] border border-neutral-200 bg-white p-3 shadow-[0_12px_40px_rgba(0,0,0,.08)] md:-mt-10 md:p-5">
     <div className="grid grid-cols-3 border-b border-neutral-200">{['Acheter','Troquer','Enchères'].map(x=><button onClick={()=>setTab(x)} key={x} className={`border-b-2 px-2 py-3 text-sm font-bold ${tab===x?'border-[#078a49] text-[#078a49]':'border-transparent text-neutral-600'}`}>{x}</button>)}</div>
     <div className="mt-3 flex gap-2"><div className="flex min-w-0 flex-1 items-center rounded-xl bg-[#f7f8f7] px-3"><Search size={20}/><input className="min-w-0 flex-1 bg-transparent px-3 py-4 text-sm outline-none" placeholder="Que recherchez-vous ?"/></div><input ref={file} type="file" accept="image/*" className="hidden"/><button onClick={()=>file.current?.click()} className="grid w-14 place-items-center rounded-xl bg-[#e8f8ef] text-[#078a49]"><Camera/></button></div>
     <div className="mt-2 grid grid-cols-[1fr_135px] gap-2"><button className="flex items-center gap-2 rounded-xl bg-[#f7f8f7] px-4 py-4 text-left text-sm"><MapPin className="text-[#078a49]" size={20}/>Partout en France<ChevronDown className="ml-auto" size={18}/></button><button className="rounded-xl bg-[#101315] font-bold text-white">Rechercher</button></div>
