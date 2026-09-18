@@ -1,0 +1,1 @@
+export default function sitemap(){return [{url:'https://dealora.fr',lastModified:new Date(),changeFrequency:'daily',priority:1}]}
