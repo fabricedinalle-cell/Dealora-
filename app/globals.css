@@ -37,3 +37,5 @@
 .suggestions button{width:100%;min-height:52px;display:grid;grid-template-columns:30px 1fr auto;align-items:center;gap:8px;text-align:left;padding:7px 9px;border-radius:12px}
 .suggestions button:hover{background:#f2fbf7}.suggestions svg{width:19px;color:#789087}.suggestions span{font-weight:700;display:flex;flex-direction:column;gap:3px}.suggestions small{font-weight:400;color:#777}.suggestions strong{color:#08a86e;font-size:14px}
 @media(max-width:600px){.suggestions{margin-left:10px;margin-right:10px}.suggestions button{font-size:13px}}
+
+.filterBar{display:flex;gap:8px;overflow:auto;margin:15px 0 3px;padding-bottom:3px}.filterBar button{white-space:nowrap;border:1px solid #dce8e3;background:#fff;border-radius:22px;padding:10px 14px;font-size:13px;font-weight:700;color:#55635e}.filterBar button.active{background:#08aa70;color:#fff;border-color:#08aa70}
