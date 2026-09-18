@@ -1,9 +1,9 @@
 import './globals.css'
-import './home.css'
 
 export const metadata = {
   title: 'Dealora — Achetez, vendez, troquez, enchérissez',
-  description: 'La marketplace nouvelle génération pour acheter, vendre, troquer et enchérir partout dans le monde.'
+  description: 'La marketplace nouvelle génération pour acheter, vendre, troquer et enchérir partout dans le monde.',
+  viewport: 'width=device-width, initial-scale=1, maximum-scale=1'
 }
 
 export default function RootLayout({ children }) {
