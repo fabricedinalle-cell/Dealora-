@@ -7,6 +7,9 @@ import {
   Heart,
   User,
   MapPin,
+  Globe2,
+  Truck,
+  ChevronDown,
   ChevronRight,
   ShieldCheck,
   Gavel,
@@ -41,7 +44,10 @@ export default function Home() {
       id: 1,
       title: 'iPhone 16 Pro',
       price: '899 €',
-      location: 'Paris',
+      location: 'Paris, France',
+      country: '🇫🇷 France',
+      delivery: 'Livraison ou retrait',
+      importFee: 'Aucun frais d’import',
       image:
         'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=900&q=80',
       badge: 'À vendre',
@@ -50,7 +56,10 @@ export default function Home() {
       id: 2,
       title: 'Sneakers premium',
       price: '180 €',
-      location: 'Lyon',
+      location: 'Lyon, France',
+      country: '🇫🇷 France',
+      delivery: 'Livraison disponible',
+      importFee: 'Aucun frais d’import',
       image:
         'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=80',
       badge: 'Troc possible',
@@ -59,7 +68,10 @@ export default function Home() {
       id: 3,
       title: 'Montre automatique',
       price: '320 €',
-      location: 'Bordeaux',
+      location: 'Genève, Suisse',
+      country: '🇨🇭 Suisse',
+      delivery: 'Livraison internationale',
+      importFee: 'Frais d’import estimés au paiement',
       image:
         'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=80',
       badge: 'Enchère',
@@ -68,7 +80,10 @@ export default function Home() {
       id: 4,
       title: 'Appareil photo',
       price: '590 €',
-      location: 'Nice',
+      location: 'Berlin, Allemagne',
+      country: '🇩🇪 Allemagne',
+      delivery: 'Livraison internationale',
+      importFee: 'Frais calculés selon destination',
       image:
         'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&w=900&q=80',
       badge: 'À vendre',
@@ -225,7 +240,7 @@ export default function Home() {
 
             <div className="mt-4 flex items-center gap-2 text-sm text-neutral-600">
               <MapPin size={16} />
-              <span>Partout en France et bientôt dans le monde</span>
+              <span>France · Europe · International</span>
             </div>
           </div>
 
@@ -262,6 +277,24 @@ export default function Home() {
               <p className="mt-3 font-black">High-tech</p>
               <p className="text-sm text-neutral-500">Bonnes affaires</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* INTERNATIONAL DISCOVERY */}
+      <section className="border-b border-neutral-200 bg-white">
+        <div className="mx-auto grid max-w-7xl gap-4 px-4 py-6 md:grid-cols-3 md:px-8">
+          <div className="flex items-center gap-4 rounded-3xl bg-[#073b2a] p-5 text-white">
+            <Globe2 className="text-[#54e6a8]" size={30} />
+            <div><p className="font-black">Des annonces sans frontières</p><p className="text-sm text-white/65">Découvrez des objets en France et à l’international.</p></div>
+          </div>
+          <div className="flex items-center gap-4 rounded-3xl bg-[#f4fbf7] p-5">
+            <Truck className="text-[#079669]" size={30} />
+            <div><p className="font-black">Livraison ou retrait</p><p className="text-sm text-neutral-600">Choisissez selon les options proposées par le vendeur.</p></div>
+          </div>
+          <div className="flex items-center gap-4 rounded-3xl border border-neutral-200 p-5">
+            <PackageCheck className="text-[#079669]" size={30} />
+            <div><p className="font-black">Importation transparente</p><p className="text-sm text-neutral-600">Les frais éventuels sont indiqués avant le paiement.</p></div>
           </div>
         </div>
       </section>
@@ -353,6 +386,12 @@ export default function Home() {
                     <MapPin size={15} />
                     {listing.location}
                   </div>
+
+                  <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold">
+                    <span className="rounded-full bg-[#dffcef] px-2.5 py-1 text-[#067a55]">{listing.country}</span>
+                    <span className="rounded-full bg-neutral-100 px-2.5 py-1 text-neutral-600">{listing.delivery}</span>
+                  </div>
+                  <p className="mt-2 text-xs text-neutral-500">{listing.importFee}</p>
                 </div>
               </article>
             ))}
